@@ -3,14 +3,13 @@
 static char CharToUpper(char letter);
 static char CharToLower(char letter);
 
-
-String strnew(const char * content)
+String strnew(const char *content)
 {
   String str = {NULL, 0};
-  
-  while(content[str.len] != '\0')
+
+  while (content[str.len] != '\0')
     str.len++;
-  
+
   str.buffer = (char *)calloc(str.len + 1, sizeof(char));
   for (int i = 0; i < str.len; i++)
     str.buffer[i] = content[i];
@@ -23,9 +22,9 @@ String StrJoin(const String strs[], int nb_of_str)
   String str = {NULL, 0};
   for (int i = 0; i < nb_of_str; i++)
     str.len += strs[i].len;
-  
+
   str.buffer = (char *)calloc(str.len + 1, sizeof(char));
-  for(int i = 0, j = 0, k = 0; i < str.len; i++, j++)
+  for (int i = 0, j = 0, k = 0; i < str.len; i++, j++)
   {
     if (j == strs[k].len)
     {
@@ -40,6 +39,20 @@ String StrJoin(const String strs[], int nb_of_str)
 String StrCopy(const String str)
 {
   return strnew(str.buffer);
+}
+
+String StrSubstr(const String str, int s, int e)
+{
+  if (s < 0 || e > str.len || s >= e)
+    return (String){NULL, 0};
+  String substr = {NULL, e - s};
+  substr.buffer = (char *)calloc(e - s + 1, sizeof(char));
+  for (int i = s, j = 0; i < e; i++, j++)
+  {
+    substr.buffer[j] = str.buffer[i];
+  }
+  substr.buffer[substr.len] = '\0';
+  return substr;
 }
 
 String *StrSplit(const String str, const String sprtr)
@@ -73,11 +86,11 @@ void str_swap_case(String *str)
 {
   for (int i = 0; i < str->len; i++)
   {
-    if(str->buffer[i] >= 'A' && str->buffer[i] <= 'Z')
+    if (str->buffer[i] >= 'A' && str->buffer[i] <= 'Z')
     {
       str->buffer[i] = CharToLower(str->buffer[i]);
     }
-    else if(str->buffer[i] >= 'a' && str->buffer[i] <= 'z')
+    else if (str->buffer[i] >= 'a' && str->buffer[i] <= 'z')
     {
       str->buffer[i] = CharToUpper(str->buffer[i]);
     }
@@ -115,16 +128,16 @@ void str_insert(String *base, const String substr, int index)
 void str_replace(String *base, const String oldstr, const String newstr)
 {
   int start;
-  while((start = strFind(*base, oldstr)) != -1)
+  while ((start = strFind(*base, oldstr)) != -1)
   {
-    if(oldstr.len == newstr.len)
+    if (oldstr.len == newstr.len)
     {
       for (int i = start, j = 0; j < newstr.len; i++, j++)
       {
         base->buffer[i] = newstr.buffer[j];
       }
     }
-    else 
+    else
     {
       // TODO: complete
     }
@@ -142,14 +155,14 @@ int strCount(const String str, const char target)
 
 int strFind(const String str, const String substr)
 {
-  for(int i = 0; i < str.len; i++)
+  for (int i = 0; i < str.len; i++)
   {
     if (str.buffer[i] == substr.buffer[0] && str.len - i >= substr.len)
     {
       bool result = true;
       for (int j = i, k = 0; k < substr.len; j++, k++)
       {
-        if(str.buffer[j] != substr.buffer[k])
+        if (str.buffer[j] != substr.buffer[k])
           result = false;
       }
       if (result)

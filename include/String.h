@@ -15,7 +15,7 @@ String strnew(const char * content);
 
 String StrJoin(const String strs[], int nb_of_str);
 String StrCopy(const String str);
-// String StrSubstr(const String str, int s, int e);
+String StrSubstr(const String str, int s, int e);
 
 // String *StrSplit(const String str, const String sprtr);
 
