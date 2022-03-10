@@ -1,4 +1,4 @@
-#include "String.h"
+#include "str.h"
 
 static char CharToUpper(char letter);
 static char CharToLower(char letter);
@@ -11,9 +11,11 @@ String strnew(const char *content)
     str.len++;
 
   str.buffer = (char *)calloc(str.len + 1, sizeof(char));
+  if (str.buffer == NULL)
+    return (String){NULL, 0};
+
   for (int i = 0; i < str.len; i++)
     str.buffer[i] = content[i];
-
   return str;
 }
 
@@ -55,10 +57,33 @@ String StrSubstr(const String str, int s, int e)
   return substr;
 }
 
-String *StrSplit(const String str, const String sprtr)
+String StrConcat(const String str1, const String str2)
 {
-  int nb_of_str = 1;
-  // for (int i = )
+  String sum = {
+    (char *)calloc(str1.len + str2.len + 1, sizeof(char)),
+    str1.len + str2.len
+  };
+  for (int i = 0; i < str1.len; i++)
+    sum.buffer[i] = str1.buffer[i];
+  for (int i = 0, j = str1.len; i < str2.len; i++, j++)
+    sum.buffer[j] = str2.buffer[i];
+  return sum;
+}
+
+String *StrSplit(const String str, const String sprtr, int *size)
+{
+  int nb_of_str = 0;
+  String *strings = (String *)calloc(str.len, sizeof(String));
+  String copy = StrCopy(str);
+  for (char * tok = strtok(copy.buffer, sprtr.buffer); tok != NULL; tok = strtok(NULL, sprtr.buffer))
+  {
+    strings[nb_of_str] = strnew(tok);
+    nb_of_str++;
+  }
+  str_free(copy);
+  strings = (String *)realloc(strings, nb_of_str * sizeof(String));
+  *size = nb_of_str;
+  return strings;
 }
 
 void str_capitalize(String *str)
@@ -139,7 +164,7 @@ void str_replace(String *base, const String oldstr, const String newstr)
     }
     else
     {
-      // TODO: complete
+      // TODO: complete this shit!
     }
   }
 }
@@ -258,6 +283,23 @@ bool strEquals(const String str1, const String str2)
     if (str1.buffer[i] != str2.buffer[i])
       return false;
   return true;
+}
+
+bool strIsEmpty(const String str)
+{
+  return str.len == 0;
+}
+
+bool strContains(const String str, const String substr)
+{
+  return strFind(str, substr) != -1;
+}
+
+char strCharAt(const String str, int index)
+{
+  if (index < 0 || index >= str.len)
+    return -1;
+  return str.buffer[index];
 }
 
 void str_free(const String str)
